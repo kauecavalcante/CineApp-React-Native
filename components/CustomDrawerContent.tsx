@@ -4,10 +4,9 @@ import { DrawerContentScrollView, DrawerItemList, DrawerContentComponentProps } 
 import { useAuth } from '@/providers/AuthProvider';
 import { Feather } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
-import PopcornIcon from '@/assets/images/pipoca.svg';
-import { LinearGradient } from 'expo-linear-gradient'; 
 import { useRouter } from 'expo-router';
-
+import { LinearGradient } from 'expo-linear-gradient';
+import PopcornIcon from '@/assets/images/pipoca.svg';
 
 const HIDDEN_ROUTES = ['search', 'movie/[id]'];
 
@@ -15,38 +14,30 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { session } = useAuth();
   const router = useRouter();
 
-  
   const [displayName, setDisplayName] = useState(
     session?.user?.user_metadata?.full_name?.split(' ')[0] || 'Visitante'
   );
 
-  
   useEffect(() => {
     if (!session?.user?.id) return;
 
     const userId = session.user.id;
 
-    
     const fetchProfileName = async () => {
-        const { data: profileData, error } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', userId)
-          .single();
-        
-        if (error) {
-            setDisplayName('Visitante');
-        } else if (profileData?.full_name) {
-            setDisplayName(profileData.full_name.split(' ')[0] || 'Visitante');
-        } else {
-            setDisplayName('Visitante');
-        }
+      
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', userId)
+        .single();
+      
+      if (profileData?.full_name) {
+        setDisplayName(profileData.full_name.split(' ')[0] || 'Visitante');
+      }
     };
-    
     
     fetchProfileName();
 
-    
     const channel = supabase.channel(`profile-updates-${userId}`)
       .on(
         'postgres_changes',
@@ -56,23 +47,24 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
           table: 'profiles',
           filter: `id=eq.${userId}` 
         },
-        (payload) => {
-          
-          fetchProfileName();
-        }
+        fetchProfileName
       )
       .subscribe();
 
-    
     return () => {
       supabase.removeChannel(channel);
     };
   }, [session?.user?.id]);
-
+  
+  const newRoutes = props.state.routes.filter(route => !HIDDEN_ROUTES.includes(route.name));
+  const originalActiveRoute = props.state.routes[props.state.index];
+  const activeRouteKey = originalActiveRoute ? originalActiveRoute.key : null;
+  const newIndex = activeRouteKey ? newRoutes.findIndex(route => route.key === activeRouteKey) : -1;
   
   const filteredState = {
     ...props.state,
-    routes: props.state.routes.filter(route => !HIDDEN_ROUTES.includes(route.name)),
+    routes: newRoutes,
+    index: newIndex === -1 ? 0 : newIndex,
   };
   
   const handleSignOut = async () => {
@@ -88,7 +80,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       end={{ x: 0.5, y: 1 }}
     >
       <View style={{ flex: 1, backgroundColor: 'transparent' }}>
-        <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: 'transparent' }}>
+        <DrawerContentScrollView {...props}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Olá, {displayName}</Text>
             <PopcornIcon width={28} height={28} />

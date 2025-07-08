@@ -18,7 +18,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '@/lib/supabase';
 import { WebView } from 'react-native-webview';
 
-const API_URL = 'http://10.10.25.28:8000'; // usar o seu IP local
+const API_URL = 'http://192.168.0.3:8000'; // usar o seu IP local
 
 type Message = {
   role: 'user' | 'assistant' | 'loading';

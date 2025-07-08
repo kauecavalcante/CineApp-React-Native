@@ -2,9 +2,15 @@ import { Stack } from 'expo-router';
 
 export default function MyListsStackLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack 
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      
       <Stack.Screen name="index" />
-      <Stack.Screen name="[listType]" />
+      
+      <Stack.Screen name="[listType]" options={{ headerShown: false }} />
     </Stack>
   );
 }
