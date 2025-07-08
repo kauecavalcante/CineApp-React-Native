@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ScrollView, ActivityIndicator, FlatList, Image, Modal, Alert } from 'react-native';
-import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useRouter, useLocalSearchParams, useFocusEffect, Stack } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getBackdropUrl, getImageUrl, getMovieDetails } from '@/lib/tmdb';
@@ -218,10 +218,15 @@ const MovieDetailsScreen = () => {
 
   return (
     <View style={styles.rootContainer}>
+     
+      <Stack.Screen options={{ headerShown: false }} />
+      
       <ScrollView style={styles.scrollView}>
+        
         <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { top: insets.top + 10 }]}>
           <Feather name="arrow-left" size={28} color="white" />
         </TouchableOpacity>
+
         <ImageBackground source={{ uri: getBackdropUrl(movieDetails.backdrop_path || movieDetails.poster_path) }} style={styles.backgroundImage}>
           <TouchableOpacity style={styles.playButton} onPress={handlePlayTrailer}><Feather name="play" size={40} color="white" style={styles.playIcon} /></TouchableOpacity>
           <LinearGradient colors={['transparent', 'rgba(44,44,44,0.6)', '#2C2C2C']} style={styles.gradient} />

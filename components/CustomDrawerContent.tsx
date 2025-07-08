@@ -1,19 +1,86 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { DrawerContentScrollView, DrawerItemList, DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useAuth } from '@/providers/AuthProvider';
 import { Feather } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { supabase } from '@/lib/supabase';
 import PopcornIcon from '@/assets/images/pipoca.svg';
 import { LinearGradient } from 'expo-linear-gradient'; 
+import { useRouter } from 'expo-router';
 
-export function CustomDrawerContent(props: any) {
-  const { user } = useAuth();
-  const firstName = user?.user_metadata?.full_name?.split(' ')[0] || 'Visitante';
+
+const HIDDEN_ROUTES = ['search', 'movie/[id]'];
+
+export function CustomDrawerContent(props: DrawerContentComponentProps) {
+  const { session } = useAuth();
+  const router = useRouter();
+
+  
+  const [displayName, setDisplayName] = useState(
+    session?.user?.user_metadata?.full_name?.split(' ')[0] || 'Visitante'
+  );
+
+  
+  useEffect(() => {
+    if (!session?.user?.id) return;
+
+    const userId = session.user.id;
+
+    
+    const fetchProfileName = async () => {
+        const { data: profileData, error } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', userId)
+          .single();
+        
+        if (error) {
+            setDisplayName('Visitante');
+        } else if (profileData?.full_name) {
+            setDisplayName(profileData.full_name.split(' ')[0] || 'Visitante');
+        } else {
+            setDisplayName('Visitante');
+        }
+    };
+    
+    
+    fetchProfileName();
+
+    
+    const channel = supabase.channel(`profile-updates-${userId}`)
+      .on(
+        'postgres_changes',
+        { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'profiles',
+          filter: `id=eq.${userId}` 
+        },
+        (payload) => {
+          
+          fetchProfileName();
+        }
+      )
+      .subscribe();
+
+    
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session?.user?.id]);
+
+  
+  const filteredState = {
+    ...props.state,
+    routes: props.state.routes.filter(route => !HIDDEN_ROUTES.includes(route.name)),
+  };
+  
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.replace('/(auth)');
+  };
 
   return (
-   
     <LinearGradient
       colors={['#453a29', '#2C2C2C']}
       style={{ flex: 1 }}
@@ -23,13 +90,13 @@ export function CustomDrawerContent(props: any) {
       <View style={{ flex: 1, backgroundColor: 'transparent' }}>
         <DrawerContentScrollView {...props} contentContainerStyle={{ backgroundColor: 'transparent' }}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Olá, {firstName}</Text>
+            <Text style={styles.headerText}>Olá, {displayName}</Text>
             <PopcornIcon width={28} height={28} />
           </View>
-          <DrawerItemList {...props} />
+          <DrawerItemList {...props} state={filteredState} />
         </DrawerContentScrollView>
         <View style={styles.footer}>
-          <TouchableOpacity onPress={() => supabase.auth.signOut()} style={styles.logoutButton}>
+          <TouchableOpacity onPress={handleSignOut} style={styles.logoutButton}>
               <Feather name="log-out" size={22} color="#a0a0a0" />
               <Text style={styles.logoutText}>Sair</Text>
           </TouchableOpacity>
