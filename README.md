@@ -1,50 +1,77 @@
-# Welcome to your Expo app 👋
+#  CineApp 🎬
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Bem-vindo ao **CineApp**, um aplicativo móvel completo para entusiastas de cinema! Desenvolvido com React Native e Expo, o CineApp permite que os utilizadores explorem um vasto catálogo de filmes, criem listas personalizadas e muito mais.
 
-## Get started
+## ✨ Funcionalidades
 
-1. Install dependencies
+- **Autenticação de Utilizadores:** Sistema completo de registo e login com e-mail e senha, utilizando o Supabase.
+- **Onboarding para Novos Utilizadores:** Uma experiência de boas-vindas para apresentar o aplicativo.
+- **Exploração de Filmes:** Navegue por filmes populares, em cartaz e descubra novos títulos.
+- **Cine IA:** Uma funcionalidade de chat com inteligência artificial para recomendações de filmes e conversas sobre cinema.
+- **Detalhes do Filme:** Veja informações completas sobre cada filme, incluindo sinopse, elenco, avaliações e trailers.
+- **Listas Personalizadas:** Crie e gira as suas próprias listas:
+    - **Favoritos:** Marque os seus filmes preferidos.
+    - **Quero Assistir:** Crie uma lista de filmes para ver no futuro.
+    - **Já Assisti:** Mantenha um registo dos filmes que já viu.
+- **Pesquisa Avançada:** Encontre filmes rapidamente através da funcionalidade de pesquisa.
+- **Configurações de Perfil:** Os utilizadores podem atualizar o seu nome e e-mail.
 
-   ```bash
-   npm install
-   ```
+## 📱 Telas do Aplicativo
 
-2. Start the app
+<p align="center">
+  <img src="./assets/images/tela1.png" alt="Tela Principal do App" width="300"/>
+  <img src="./assets/images/tela2.png" alt="Tela de Detalhes do Filme" width="300"/>
+</p>
 
-   ```bash
-   npx expo start
-   ```
+## 🚀 Tecnologias Utilizadas
 
-In the output, you'll find options to open the app in a
+Este projeto foi construído com as seguintes tecnologias:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **[React Native](https://reactnative.dev/)**: Framework para desenvolvimento de aplicativos móveis.
+- **[Expo](https://expo.dev/)**: Plataforma e conjunto de ferramentas para facilitar o desenvolvimento com React Native.
+- **[TypeScript](https://www.typescriptlang.org/)**: Superset do JavaScript que adiciona tipagem estática.
+- **[Supabase](https://supabase.io/)**: Backend como serviço (BaaS) para autenticação e base de dados PostgreSQL.
+- **[TMDB API](https://www.themoviedb.org/documentation/api)**: API para obter todos os dados sobre os filmes.
+- **[Expo Router](https://expo.github.io/router/)**: Sistema de rotas baseado em ficheiros para uma navegação declarativa.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## ⚙️ Como Executar o Projeto
 
-## Get a fresh project
+Para executar este projeto localmente, siga os passos abaixo:
 
-When you're ready, run:
+1.  **Clone o Repositório:**
+    ```bash
+    git clone [https://github.com/kauecavalcante/CineApp-React-Native]
+    cd CineApp-React-Native
+    ```
 
-```bash
-npm run reset-project
-```
+2.  **Instale as Dependências:**
+    ```bash
+    npm install
+    ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3.  **Configure as Variáveis de Ambiente:**
+    * Crie um ficheiro chamado `.env` na raiz do projeto.
+    * Adicione as suas chaves de API a este ficheiro:
+      ```
+      EXPO_PUBLIC_SUPABASE_URL=SUA_URL_SUPABASE_AQUI
+      EXPO_PUBLIC_SUPABASE_ANON_KEY=SUA_CHAVE_ANON_AQUI
+      EXPO_PUBLIC_TMDB_API_KEY=SUA_CHAVE_TMDB_AQUI
+      ```
 
-## Learn more
+4.  **Execute o Aplicativo:**
+    * **Para iOS:**
+      ```bash
+      npx expo run:ios
+      ```
+    * **Para Android:**
+      ```bash
+      npx expo run:android
+      ```
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📄 Licença
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Este projeto está sob a licença MIT. Veja o ficheiro `LICENSE` para mais detalhes.
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Feito por **[Kauê Cavalcante W.]**
