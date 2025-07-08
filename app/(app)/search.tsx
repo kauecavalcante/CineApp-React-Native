@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TextInput, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { searchMovies } from '@/lib/tmdb';
-import { MovieListItem } from '@/components/MovieListItem';
+import { MovieListItem } from '@/components/MovieListItem'; 
 
 const SearchScreen = () => {
   const params = useLocalSearchParams<{ query: string }>();
@@ -13,25 +13,28 @@ const SearchScreen = () => {
 
   
   const [searchQuery, setSearchQuery] = useState(params.query || '');
- 
   const [submittedQuery, setSubmittedQuery] = useState(params.query || '');
 
   const [movies, setMovies] = useState<any[]>([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(true);
 
+
   const fetchMovies = useCallback(async (query: string, currentPage: number) => {
-    
     if (!query) {
       setMovies([]);
       setLoading(false);
       return;
     };
     
-    if (currentPage > 1) setLoadingMore(true);
-    else setLoading(true);
+    if (currentPage > 1) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+      setMovies([]); 
+    }
 
     try {
       const data = await searchMovies(query, currentPage);
@@ -45,16 +48,26 @@ const SearchScreen = () => {
     }
   }, []);
   
- 
+  
   useEffect(() => {
-    setMovies([]);
-    setPage(1);
-    fetchMovies(submittedQuery, 1);
-  }, [submittedQuery, fetchMovies]);
+    const newQuery = params.query || '';
+    setSearchQuery(newQuery);
+    setSubmittedQuery(newQuery);
+  }, [params.query]);
 
- 
+  
+  useEffect(() => {
+    fetchMovies(submittedQuery, 1);
+    
+  }, [submittedQuery, fetchMovies]); 
+
+  
   const handleSearchSubmit = () => {
-    setSubmittedQuery(searchQuery);
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery && trimmedQuery !== submittedQuery) {
+      setPage(1); 
+      setSubmittedQuery(trimmedQuery);
+    }
   };
 
   const handleLoadMore = () => {
@@ -67,6 +80,7 @@ const SearchScreen = () => {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      <Stack.Screen options={{ headerShown: false }} />
       
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -87,7 +101,6 @@ const SearchScreen = () => {
         </View>
       </View>
 
-      
       {loading && page === 1 ? (
         <ActivityIndicator size="large" color="#FFBB38" style={{ marginTop: 50 }}/>
       ) : (
@@ -100,11 +113,13 @@ const SearchScreen = () => {
           onEndReachedThreshold={0.5}
           ListFooterComponent={loadingMore ? <ActivityIndicator style={{ marginVertical: 20 }} color="#FFBB38" /> : null}
           ListEmptyComponent={() => (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                {submittedQuery ? `Nenhum filme encontrado para "${submittedQuery}".` : 'Comece a digitar para buscar um filme.'}
-              </Text>
-            </View>
+            !loading && (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>
+                  {submittedQuery ? `Nenhum filme encontrado para "${submittedQuery}".` : 'Comece a digitar para buscar um filme.'}
+                </Text>
+              </View>
+            )
           )}
         />
       )}

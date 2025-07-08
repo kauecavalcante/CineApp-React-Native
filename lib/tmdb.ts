@@ -2,12 +2,20 @@ const API_URL = 'https://api.themoviedb.org/3';
 const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/w500'; 
 const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280'; 
 
+
 const API_KEY = process.env.EXPO_PUBLIC_TMDB_API_KEY;
+
 
 if (!API_KEY) {
   throw new Error("A chave da API do TMDB não foi encontrada. Verifique seu arquivo .env");
 }
 
+/**
+ * Constrói a URL completa para uma requisição à API do TMDB.
+ * @param endpoint O endpoint da API (ex: /movie/popular).
+ * @param params Parâmetros adicionais para a URL.
+ * @returns A URL completa.
+ */
 const buildUrl = (endpoint: string, params: string = '') => {
   return `${API_URL}${endpoint}?api_key=${API_KEY}&language=pt-BR&region=BR${params}`;
 };
@@ -43,11 +51,21 @@ export async function getMovieDetails(movieId: number) {
   return await response.json();
 }
 
+/**
+ * Retorna a URL completa para um pôster de filme.
+ * @param path O caminho do arquivo do pôster.
+ * @returns A URL completa da imagem ou uma URL de placeholder.
+ */
 export function getImageUrl(path: string) {
   if (!path) return 'https://placehold.co/500x750/2C2C2C/FFBB38?text=Sem+Imagem';
   return `${POSTER_BASE_URL}${path}`;
 }
 
+/**
+ * Retorna a URL completa para uma imagem de backdrop.
+ * @param path O caminho do arquivo do backdrop.
+ * @returns A URL completa da imagem ou uma URL de placeholder.
+ */
 export function getBackdropUrl(path: string) {
     if (!path) return 'https://placehold.co/1280x720/2C2C2C/FFBB38?text=Sem+Imagem';
     return `${BACKDROP_BASE_URL}${path}`;
