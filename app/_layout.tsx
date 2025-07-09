@@ -8,6 +8,18 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 
+import { ThemeProvider, DarkTheme } from '@react-navigation/native';
+
+
+const CustomDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: '#453a29', 
+    card: '#453a29',       
+  },
+};
+
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
@@ -15,19 +27,16 @@ function RootLayoutNav() {
   const router = useRouter();
   const segments = useSegments();
 
-
   const [fontsLoaded, error] = useFonts({
     'Poppins-Regular': require('@/assets/fonts/Poppins-Regular.ttf'),
     'Poppins-SemiBold': require('@/assets/fonts/Poppins-SemiBold.ttf'),
     'Poppins-Bold': require('@/assets/fonts/Poppins-Bold.ttf'),
   });
 
-  
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
-  
   useEffect(() => {
     const isReady = !loading && fontsLoaded;
 
@@ -35,32 +44,23 @@ function RootLayoutNav() {
       return; 
     }
 
-    
     const hasSeenOnboarding = session?.user?.user_metadata?.has_seen_onboarding;
-
-    
     const inAppGroup = segments[0] === '(app)';
 
     if (session) {
-     
       if (!hasSeenOnboarding) {
-        
         router.replace('/(welcome)');
       } else if (!inAppGroup) {
-        
         router.replace('/(app)/home');
       }
     } else if (!session && inAppGroup) {
-      
       router.replace('/(auth)');
     }
 
-    
     SplashScreen.hideAsync();
 
   }, [session, loading, fontsLoaded, segments, router]);
 
-  
   if (!fontsLoaded || loading) {
     return null;
   }
@@ -71,13 +71,15 @@ function RootLayoutNav() {
   );
 }
 
-
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style="light" />
       <AuthProvider>
-        <RootLayoutNav />
+  
+        <ThemeProvider value={CustomDarkTheme}>
+          <StatusBar style="light" />
+          <RootLayoutNav />
+        </ThemeProvider>
       </AuthProvider>
     </GestureHandlerRootView>
   );

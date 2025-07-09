@@ -1,16 +1,27 @@
 import { Drawer } from 'expo-router/drawer';
+import { useSegments } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { CustomDrawerContent } from '@/components/CustomDrawerContent';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
-import { TouchableOpacity, View } from 'react-native'; 
+import { TouchableOpacity, View } from 'react-native';
 import { AnimatedSearchBar } from '@/components/AnimatedSearchBar';
 
 export default function DrawerLayout() {
+
+  const segments: string[] = useSegments();
+
+
+  const isDeepScreen = 
+    (segments.includes('explore') && segments.length > 2) || 
+    (segments.includes('mylists') && segments.length > 2) ||
+    segments.includes('movie') ||
+    segments.includes('search');
+
   return (
     <Drawer
       drawerContent={(props: DrawerContentComponentProps) => <CustomDrawerContent {...props} />}
       screenOptions={({ navigation }) => ({
-        headerShown: true,
+        headerShown: !isDeepScreen,
         headerStyle: {
           backgroundColor: '#453a29',
           elevation: 0,
@@ -76,6 +87,9 @@ export default function DrawerLayout() {
           drawerIcon: ({ color, size }) => <Feather name="settings" color={color} size={size} />,
         }}
       />
+      {/* Telas ocultas no menu */}
+      <Drawer.Screen name="movie/[id]" options={{ drawerItemStyle: { display: 'none' } }} />
+      <Drawer.Screen name="search" options={{ drawerItemStyle: { display: 'none' } }} />
     </Drawer>
   );
 }

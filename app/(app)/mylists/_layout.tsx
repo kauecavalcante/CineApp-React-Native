@@ -5,12 +5,12 @@ export default function MyListsStackLayout() {
     <Stack 
       screenOptions={{
         headerShown: false,
+        animation: 'simple_push',
+        contentStyle: { backgroundColor: '#453a29' },
       }}
     >
-      
       <Stack.Screen name="index" />
-      
-      <Stack.Screen name="[listType]" options={{ headerShown: false }} />
+      <Stack.Screen name="[listType]" />
     </Stack>
   );
 }

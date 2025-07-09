@@ -13,9 +13,21 @@ import {
 import { supabase } from '@/lib/supabase';
 import LoginSvg from '@/assets/images/pipoca.svg';
 import SignupSvg from '@/assets/images/pipoca1.svg';
-import { SvgProps } from 'react-native-svg';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+
+
+const MemoizedAuthIllustration = React.memo(function AuthIllustration({ mode }: { mode: 'login' | 'signup' }) {
+  return (
+    <View style={styles.svgContainer}>
+      {mode === 'login' 
+        ? <LoginSvg width="100%" height="100%" /> 
+        : <SignupSvg width="100%" height="100%" />
+      }
+    </View>
+  );
+});
+
 
 type AuthErrors = {
   name?: string;
@@ -88,12 +100,6 @@ export default function AuthScreen() {
     setLoading(false);
   }
 
-  const AuthIllustration = ({ ...props }: SvgProps) => {
-    return mode === 'login'
-      ? <LoginSvg {...props} />
-      : <SignupSvg {...props} />;
-  }
-
   const getInputStyle = (fieldName: keyof AuthErrors) => [
     styles.input,
     errors[fieldName] ? styles.inputError : null,
@@ -113,7 +119,9 @@ export default function AuthScreen() {
       />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
-          <AuthIllustration width={'100%'} height={220} preserveAspectRatio="xMidYMid meet" />
+          
+          <MemoizedAuthIllustration mode={mode} />
+
           <Text style={styles.title}>{mode === 'login' ? 'Bem-vindo de volta!' : 'Crie sua conta'}</Text>
           <Text style={styles.subtitle}>Acesse para continuar sua jornada cinematográfica.</Text>
         </View>
@@ -212,11 +220,17 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollContainer: { flexGrow: 1, justifyContent: 'center', paddingVertical: 40 },
   header: { alignItems: 'center', marginBottom: 30, paddingHorizontal: 25 },
+  
+  svgContainer: {
+    width: '100%',
+    aspectRatio: 1.7, 
+    marginBottom: 20,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: 'white',
-    marginTop: 20,
+    marginTop: 0, 
     textAlign: 'center',
   },
   subtitle: {
