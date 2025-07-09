@@ -7,15 +7,11 @@ import { TouchableOpacity, View } from 'react-native';
 import { AnimatedSearchBar } from '@/components/AnimatedSearchBar';
 
 export default function DrawerLayout() {
-
   const segments: string[] = useSegments();
-
 
   const isDeepScreen = 
     (segments.includes('explore') && segments.length > 2) || 
-    (segments.includes('mylists') && segments.length > 2) ||
-    segments.includes('movie') ||
-    segments.includes('search');
+    (segments.includes('mylists') && segments.length > 2);
 
   return (
     <Drawer
@@ -87,9 +83,7 @@ export default function DrawerLayout() {
           drawerIcon: ({ color, size }) => <Feather name="settings" color={color} size={size} />,
         }}
       />
-      {/* Telas ocultas no menu */}
-      <Drawer.Screen name="movie/[id]" options={{ drawerItemStyle: { display: 'none' } }} />
-      <Drawer.Screen name="search" options={{ drawerItemStyle: { display: 'none' } }} />
+      
     </Drawer>
   );
 }

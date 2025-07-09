@@ -7,9 +7,9 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-
 import { ThemeProvider, DarkTheme } from '@react-navigation/native';
 
+SplashScreen.preventAutoHideAsync();
 
 const CustomDarkTheme = {
   ...DarkTheme,
@@ -19,8 +19,6 @@ const CustomDarkTheme = {
     card: '#453a29',       
   },
 };
-
-SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   const { session, loading } = useAuth();
@@ -38,23 +36,31 @@ function RootLayoutNav() {
   }, [error]);
 
   useEffect(() => {
-    const isReady = !loading && fontsLoaded;
-
-    if (!isReady) {
+    const isAppReady = fontsLoaded && !loading;
+    if (!isAppReady) {
       return; 
     }
 
-    const hasSeenOnboarding = session?.user?.user_metadata?.has_seen_onboarding;
-    const inAppGroup = segments[0] === '(app)';
+    const inAuthGroup = segments[0] === '(auth)';
+    const inWelcomeGroup = segments[0] === '(welcome)';
 
     if (session) {
+     
+      const hasSeenOnboarding = session.user?.user_metadata?.has_seen_onboarding;
+
       if (!hasSeenOnboarding) {
+      
         router.replace('/(welcome)');
-      } else if (!inAppGroup) {
+      } else if (inAuthGroup || inWelcomeGroup) {
+       
         router.replace('/(app)/home');
       }
-    } else if (!session && inAppGroup) {
-      router.replace('/(auth)');
+    } else {
+     
+      if (!inAuthGroup && !inWelcomeGroup) {
+       
+        router.replace('/(auth)');
+      }
     }
 
     SplashScreen.hideAsync();
@@ -65,7 +71,6 @@ function RootLayoutNav() {
     return null;
   }
 
-  
   return (
       <Stack screenOptions={{ headerShown: false }} />
   );
@@ -75,7 +80,6 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
-  
         <ThemeProvider value={CustomDarkTheme}>
           <StatusBar style="light" />
           <RootLayoutNav />
