@@ -18,7 +18,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '@/lib/supabase';
 import { WebView } from 'react-native-webview';
 
-const API_URL = 'http://192.168.0.3:8000'; // usar o seu IP local
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 type Message = {
   role: 'user' | 'assistant' | 'loading';
@@ -150,7 +151,20 @@ export default function CineIAScreen() {
   
         clearTimeout(timeoutId);
   
+       
         if (!response.ok) {
+          
+          if (response.status === 429) {
+            const quotaExceededMessage = "Seu limite diário de mensagens acabou. 😢\n\nPara ter conversas ilimitadas, assine nosso plano premium!";
+            setMessages(prevMessages => {
+              const updatedMessages = [...prevMessages];
+              updatedMessages[updatedMessages.length - 1] = { role: 'assistant', content: quotaExceededMessage };
+              return updatedMessages;
+            });
+          
+            return; 
+          }
+          
           const errorData = await response.json();
           throw new Error(errorData.detail || 'Ocorreu um erro na API.');
         }

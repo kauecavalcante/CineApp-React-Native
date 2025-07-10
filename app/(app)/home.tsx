@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '@/providers/AuthProvider';
+import { AdBanner } from '@/components/AdBanner';
 import { TrendingMovieCard } from '@/components/TrendingMovieCard';
 import { MovieTabs } from '@/components/MovieTabs';
 import { MovieListItem } from '@/components/MovieListItem';
@@ -11,6 +14,7 @@ import {
   getUpcomingMovies, 
   getTopRatedMovies 
 } from '@/lib/tmdb';
+import { ThemedText } from '@/components/ThemedText';
 
 type Movie = {
   id: number;
@@ -23,6 +27,7 @@ type Movie = {
 const TABS = ['Populares', 'Em Cartaz', 'Próximos Lançamentos', 'Mais Votados'];
 
 export default function MovieHomeScreen() {
+  const { isPremium } = useAuth();
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
   const [listedMovies, setListedMovies] = useState<Movie[]>([]);
   const [activeTab, setActiveTab] = useState(TABS[0]);
@@ -69,7 +74,8 @@ export default function MovieHomeScreen() {
   }, [activeTab, loadMoviesByTab]);
 
   return (
-    <View style={styles.container}>
+   
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <LinearGradient
         colors={['#453a29', '#2C2C2C']}
         style={StyleSheet.absoluteFill}
@@ -83,7 +89,7 @@ export default function MovieHomeScreen() {
         ListHeaderComponent={
           <>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Em Destaque</Text>
+              <ThemedText type="title" style={styles.sectionTitle}>Em Destaque</ThemedText>
               {loading.trending ? (
                 <ActivityIndicator size="large" color="#fff" style={{ height: 260 }}/>
               ) : (
@@ -103,22 +109,24 @@ export default function MovieHomeScreen() {
         ListFooterComponent={loading.list ? <ActivityIndicator size="large" color="#fff" style={{ marginVertical: 20 }} /> : null}
         contentContainerStyle={styles.mainListContainer}
       />
-    </View>
+      
+      {!isPremium && <AdBanner />}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { 
+      flex: 1 
+    },
     mainListContainer: {
-        paddingHorizontal: 20,
         paddingBottom: 20,
     },
     section: { 
+     
       marginTop: 20,
     },
     sectionTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
         color: 'white',
         marginBottom: 20,
         paddingHorizontal: 20,
