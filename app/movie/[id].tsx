@@ -221,7 +221,11 @@ const MovieDetailsScreen = () => {
      
       <Stack.Screen options={{ headerShown: false }} />
       
-      <ScrollView style={styles.scrollView}>
+      {/* CORREÇÃO APLICADA AQUI */}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
+      >
         
         <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { top: insets.top + 10 }]}>
           <Feather name="arrow-left" size={28} color="white" />
@@ -254,10 +258,11 @@ const MovieDetailsScreen = () => {
         <MovieDetailTabs tabs={TABS} activeTab={activeTab} onTabPress={setActiveTab} />
         <View style={styles.contentSection}>{renderTabContent()}</View>
       </ScrollView>
+
       <Modal animationType="slide" transparent={false} visible={isTrailerVisible} onRequestClose={() => setTrailerVisible(false)}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={[styles.closeButton, { top: insets.top || 20 }]} onPress={() => setTrailerVisible(false)}><Feather name="x" size={30} color="white" /></TouchableOpacity>
-          <WebView style={{ flex: 1, backgroundColor: 'black' }} javaScriptEnabled={true} domStorageEnabled={true} source={{ uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&rel=0` }} />
+          <WebView style={{ flex: 1, backgroundColor: 'black' }} javaScriptEnabled={true} domStorageEnabled={true} source={{ uri: `https://www.youtube.com/embed/$${trailerKey}?autoplay=1&rel=0` }} />
         </View>
       </Modal>
     </View>

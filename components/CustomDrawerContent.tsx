@@ -7,12 +7,14 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import PopcornIcon from '@/assets/images/pipoca.svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const HIDDEN_ROUTES = ['search', 'movie/[id]'];
+const HIDDEN_ROUTES = ['search', 'movie/[id]', 'premium'];
 
 export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { session } = useAuth();
   const router = useRouter();
+  const insets = useSafeAreaInsets(); // Hook para obter as margens seguras
 
   const [displayName, setDisplayName] = useState(
     session?.user?.user_metadata?.full_name?.split(' ')[0] || 'Visitante'
@@ -87,7 +89,9 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
           </View>
           <DrawerItemList {...props} state={filteredState} />
         </DrawerContentScrollView>
-        <View style={styles.footer}>
+
+        {/* MARGEM INFERIOR AUMENTADA AQUI */}
+        <View style={[styles.footer, { paddingBottom: insets.bottom + 10 }]}>
           <TouchableOpacity onPress={handleSignOut} style={styles.logoutButton}>
               <Feather name="log-out" size={22} color="#a0a0a0" />
               <Text style={styles.logoutText}>Sair</Text>
@@ -112,7 +116,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#3a3a3a',
     backgroundColor: 'transparent' 

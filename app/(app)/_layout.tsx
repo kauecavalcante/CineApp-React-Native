@@ -76,6 +76,16 @@ export default function DrawerLayout() {
           drawerIcon: ({ color, size }) => <Feather name="list" color={color} size={size} />,
         }}
       />
+
+      {/* ITEM PREMIUM ADICIONADO AQUI */}
+      <Drawer.Screen
+        name="premium"
+        options={{
+          drawerLabel: 'Premium',
+          drawerIcon: ({ color, size }) => <Feather name="star" color={color} size={size} />,
+        }}
+      />
+      
       <Drawer.Screen
         name="settings"
         options={{

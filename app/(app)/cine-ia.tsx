@@ -199,22 +199,35 @@ export default function CineIAScreen() {
     }, [messages]);
   
     return (
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container} keyboardVerticalOffset={Platform.OS === 'ios' ? 116 : 0} >
+      <View style={styles.container}>
         <LinearGradient colors={['#453a29', '#2C2C2C']} style={StyleSheet.absoluteFill} />
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={({ item }) => <MessageBubble message={item} onPlayTrailer={handlePlayTrailer} />}
-          keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={[styles.chatContainer, { paddingBottom: 20 }]}
+        
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
           style={{ flex: 1 }}
-        />
-        <View style={[styles.inputContainer, { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 }]}>
-          <TextInput style={styles.input} value={input} onChangeText={setInput} placeholder="Converse com o Cine..." placeholderTextColor="#a0a0a0" multiline />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage} disabled={isLoading}>
-            <Feather name="send" size={24} color={isLoading ? '#555' : '#FFBB38'} />
-          </TouchableOpacity>
-        </View>
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 116 : 0}
+        >
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={({ item }) => <MessageBubble message={item} onPlayTrailer={handlePlayTrailer} />}
+            keyExtractor={(_, index) => index.toString()}
+            contentContainerStyle={styles.chatContainer}
+          />
+          <View style={[styles.inputContainer, { paddingBottom: insets.bottom > 0 ? insets.bottom + 5 : 10 }]}>
+            <TextInput 
+              style={styles.input} 
+              value={input} 
+              onChangeText={setInput} 
+              placeholder="Converse com o Cine..." 
+              placeholderTextColor="#a0a0a0" 
+              multiline 
+            />
+            <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage} disabled={isLoading}>
+              <Feather name="send" size={24} color={isLoading ? '#555' : '#FFBB38'} />
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
   
         <Modal
           animationType="slide"
@@ -234,26 +247,93 @@ export default function CineIAScreen() {
             </TouchableOpacity>
           </View>
         </Modal>
-      </KeyboardAvoidingView>
+      </View>
     );
 }
 
-
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  chatContainer: { paddingHorizontal: 10, paddingTop: 20 },
-  bubble: { maxWidth: '80%', padding: 15, borderRadius: 20, marginBottom: 10 },
-  userBubble: { backgroundColor: '#FFBB38', alignSelf: 'flex-end', borderBottomRightRadius: 5 },
-  assistantBubble: { backgroundColor: '#333', alignSelf: 'flex-start', borderBottomLeftRadius: 5 },
-  userMessageText: { fontSize: 16, color: '#000', lineHeight: 24 },
-  assistantMessageText: { fontSize: 16, color: 'white', lineHeight: 24 },
-  trailerLink: { color: '#FFBB38', fontWeight: 'bold', textDecorationLine: 'underline' },
-  inputContainer: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingTop: 10, backgroundColor: '#2C2C2C', borderTopWidth: 1, borderTopColor: '#3a3a3a' },
-  input: { flex: 1, backgroundColor: '#333', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 10, fontSize: 16, color: 'white', marginRight: 10, maxHeight: 120, paddingTop: Platform.OS === 'ios' ? 10 : undefined, },
-  sendButton: { alignSelf: 'flex-end', padding: 10, marginBottom: 5 },
-  modalContainer: { flex: 1, backgroundColor: 'black' },
-  closeButton: { position: 'absolute', right: 15, zIndex: 1, padding: 10, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20 },
-  heading3: { fontSize: 18, fontWeight: 'bold', color: '#FFBB38', marginTop: 10, marginBottom: 5 },
+  chatContainer: { 
+    paddingHorizontal: 10, 
+    paddingTop: 20,
+    flexGrow: 1,
+  },
+  bubble: { 
+    maxWidth: '80%', 
+    padding: 15, 
+    borderRadius: 20, 
+    marginBottom: 10 
+  },
+  userBubble: { 
+    backgroundColor: '#FFBB38', 
+    alignSelf: 'flex-end', 
+    borderBottomRightRadius: 5 
+  },
+  assistantBubble: { 
+    backgroundColor: '#333', 
+    alignSelf: 'flex-start', 
+    borderBottomLeftRadius: 5 
+  },
+  userMessageText: { 
+    fontSize: 16, 
+    color: '#000', 
+    lineHeight: 24 
+  },
+  assistantMessageText: { 
+    fontSize: 16, 
+    color: 'white', 
+    lineHeight: 24 
+  },
+  trailerLink: { 
+    color: '#FFBB38', 
+    fontWeight: 'bold', 
+    textDecorationLine: 'underline' 
+  },
+  inputContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingHorizontal: 10, 
+    paddingTop: 10, 
+    backgroundColor: '#2C2C2C', 
+    borderTopWidth: 1, 
+    borderTopColor: '#3a3a3a' 
+  },
+  input: { 
+    flex: 1, 
+    backgroundColor: '#333', 
+    borderRadius: 20, 
+    paddingHorizontal: 20, 
+    paddingVertical: 10, 
+    fontSize: 16, 
+    color: 'white', 
+    marginRight: 10, 
+    maxHeight: 120, 
+    paddingTop: Platform.OS === 'ios' ? 10 : 10,
+  },
+  sendButton: { 
+    alignSelf: 'flex-end', 
+    padding: 10, 
+    marginBottom: 5 
+  },
+  modalContainer: { 
+    flex: 1, 
+    backgroundColor: 'black' 
+  },
+  closeButton: { 
+    position: 'absolute', 
+    right: 15, 
+    zIndex: 1, 
+    padding: 10, 
+    backgroundColor: 'rgba(0,0,0,0.5)', 
+    borderRadius: 20 
+  },
+  heading3: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    color: '#FFBB38', 
+    marginTop: 10, 
+    marginBottom: 5 
+  },
   listItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',

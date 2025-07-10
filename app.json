@@ -18,7 +18,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.kaueguto.cineapp"
+      "package": "com.kaueguto.cineapp",
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "bundler": "metro",
