@@ -262,7 +262,12 @@ const MovieDetailsScreen = () => {
       <Modal animationType="slide" transparent={false} visible={isTrailerVisible} onRequestClose={() => setTrailerVisible(false)}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={[styles.closeButton, { top: insets.top || 20 }]} onPress={() => setTrailerVisible(false)}><Feather name="x" size={30} color="white" /></TouchableOpacity>
-          <WebView style={{ flex: 1, backgroundColor: 'black' }} javaScriptEnabled={true} domStorageEnabled={true} source={{ uri: `https://www.youtube.com/embed/$${trailerKey}?autoplay=1&rel=0` }} />
+          <WebView
+              style={{ flex: 1, backgroundColor: 'black' }}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              source={{ uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&rel=0` }}
+            />
         </View>
       </Modal>
     </View>
