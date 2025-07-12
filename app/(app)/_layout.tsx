@@ -77,7 +77,7 @@ export default function DrawerLayout() {
         }}
       />
 
-      {/* ITEM PREMIUM ADICIONADO AQUI */}
+      
       <Drawer.Screen
         name="premium"
         options={{

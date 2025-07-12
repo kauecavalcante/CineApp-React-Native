@@ -9,7 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import PopcornIcon from '@/assets/images/pipoca.svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const HIDDEN_ROUTES = ['search', 'movie/[id]', 'premium'];
+const HIDDEN_ROUTES = ['search', 'movie/[id]'];
 
 export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { session } = useAuth();
