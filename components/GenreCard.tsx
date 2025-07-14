@@ -1,72 +1,58 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Text, StyleSheet, ImageBackground, Pressable } from 'react-native';
+
 
 type GenreCardProps = {
   genreName: string;
-  ImageComponent: React.FC<any>; 
+  imageSource: any; 
   onPress: () => void;
 };
 
-export function GenreCard({ genreName, ImageComponent, onPress }: GenreCardProps) {
+
+export const GenreCard = React.memo(({ genreName, imageSource, onPress }: GenreCardProps) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
-    
-      <View style={styles.imageContainer}>
-       
-        <ImageComponent 
-          width="100%" 
-          height="100%" 
-          style={StyleSheet.absoluteFill} 
-          preserveAspectRatio="xMidYMid slice" 
-        />
-        <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.2)', 'rgba(0,0,0,0.9)']}
-          style={styles.gradient}
-        />
-       
-        <Text style={styles.text}>{genreName}</Text>
-      </View>
-    </TouchableOpacity>
+    <Pressable onPress={onPress} style={styles.container}>
+      <ImageBackground
+        source={imageSource}
+        style={styles.imageBackground}
+        imageStyle={styles.imageStyle}
+        resizeMode="cover"
+      >
+        <Text style={styles.genreText}>{genreName}</Text>
+      </ImageBackground>
+    </Pressable>
   );
-}
+});
+
+
+GenreCard.displayName = 'GenreCard';
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 15,
-    
-    shadowColor: '#000',
-    shadowOffset: {
-      width: -4,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-  },
-  imageContainer: {
     height: 120,
-    borderRadius: 16,
-    overflow: 'hidden',
-    justifyContent: 'flex-end', 
-    // Sombra para Android
-    elevation: 8,
-    backgroundColor: '#2C2C2C',
+    marginBottom: 20,
+    borderRadius: 15,
+    overflow: 'hidden', 
+    elevation: 5,
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  gradient: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '100%',
+  imageBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  text: {
-    color: 'white',
-    fontSize: 28,
+  imageStyle: {
+    borderRadius: 15,
+  },
+  genreText: {
+    color: '#FFFFFF',
+    fontSize: 24,
     fontWeight: 'bold',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
-    padding: 20,
-    zIndex: 1, 
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
 });

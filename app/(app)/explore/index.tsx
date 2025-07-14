@@ -1,35 +1,40 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { GenreCard } from '@/components/GenreCard';
 import { Link } from 'expo-router';
 
 
-import AcaoIcon from '@/assets/images/genres/acao.svg';
-import AnimacaoIcon from '@/assets/images/genres/animacao.svg';
-import AventuraIcon from '@/assets/images/genres/aventura.svg';
-import ComediaIcon from '@/assets/images/genres/comedia.svg';
-import DocumentarioIcon from '@/assets/images/genres/documentario.svg';
-import DramaIcon from '@/assets/images/genres/drama.svg';
-import FamiliaIcon from '@/assets/images/genres/familia.svg';
-import FiccaoIcon from '@/assets/images/genres/ficcao.svg';
-import RomanceIcon from '@/assets/images/genres/romance.svg';
-import TerrorIcon from '@/assets/images/genres/terror.svg';
-
 const genres = [
-  { id: 28, name: 'Ação', ImageComponent: AcaoIcon },
-  { id: 16, name: 'Animação', ImageComponent: AnimacaoIcon },
-  { id: 12, name: 'Aventura', ImageComponent: AventuraIcon },
-  { id: 35, name: 'Comédia', ImageComponent: ComediaIcon },
-  { id: 99, name: 'Documentário', ImageComponent: DocumentarioIcon },
-  { id: 18, name: 'Drama', ImageComponent: DramaIcon },
-  { id: 10751, name: 'Família', ImageComponent: FamiliaIcon },
-  { id: 878, name: 'Ficção Científica', ImageComponent: FiccaoIcon },
-  { id: 10749, name: 'Romance', ImageComponent: RomanceIcon },
-  { id: 27, name: 'Terror', ImageComponent: TerrorIcon },
+  { id: 28, name: 'Ação', imageSource: require('@/assets/images/genres/acao.png') },
+  { id: 16, name: 'Animação', imageSource: require('@/assets/images/genres/animacao.png') },
+  { id: 12, name: 'Aventura', imageSource: require('@/assets/images/genres/aventura.png') },
+  { id: 35, name: 'Comédia', imageSource: require('@/assets/images/genres/comedia.png') },
+  { id: 99, name: 'Documentário', imageSource: require('@/assets/images/genres/documentario.png') },
+  { id: 18, name: 'Drama', imageSource: require('@/assets/images/genres/drama.png') },
+  { id: 10751, name: 'Família', imageSource: require('@/assets/images/genres/familia.png') },
+  { id: 878, name: 'Ficção Científica', imageSource: require('@/assets/images/genres/ficcao.png') },
+  { id: 10749, name: 'Romance', imageSource: require('@/assets/images/genres/romance.png') },
+  { id: 27, name: 'Terror', imageSource: require('@/assets/images/genres/terror.png') },
 ];
 
 export default function ExploreScreen() {
+  const renderGenre = ({ item }: { item: typeof genres[0] }) => (
+    <Link
+      href={{
+        pathname: "/explore/genre/[id]",
+        params: { id: item.id, name: item.name }
+      }}
+      asChild
+    >
+      <GenreCard
+        genreName={item.name}
+        imageSource={item.imageSource} 
+        onPress={() => {}}
+      />
+    </Link>
+  );
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -38,24 +43,15 @@ export default function ExploreScreen() {
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 1 }}
       />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {genres.map((genre) => (
-          <Link
-            key={genre.id}
-            href={{
-              pathname: "/explore/genre/[id]",
-              params: { id: genre.id, name: genre.name }
-            }}
-            asChild 
-          >
-            <GenreCard
-              genreName={genre.name}
-              ImageComponent={genre.ImageComponent}
-              onPress={() => {}} 
-            />
-          </Link>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={genres}
+        renderItem={renderGenre}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.scrollContainer}
+        initialNumToRender={5} 
+        maxToRenderPerBatch={5} 
+        windowSize={11} 
+      />
     </View>
   );
 }

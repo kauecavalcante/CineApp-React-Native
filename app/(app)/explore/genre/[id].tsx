@@ -6,13 +6,20 @@ import { Feather } from '@expo/vector-icons';
 import { getMoviesByGenre } from '@/lib/tmdb';
 import { MovieListItem } from '@/components/MovieListItem';
 
-
 import LAIcon from '@/assets/images/L.svg';
 import DezAIcon from '@/assets/images/10a.svg';
 import DozeAIcon from '@/assets/images/12a.svg';
 import QuatorzeAIcon from '@/assets/images/14a.svg';
 import DezesseisAIcon from '@/assets/images/16a.svg';
 import DezoitoAIcon from '@/assets/images/18a.svg';
+
+export interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+  [key: string]: any; 
+}
 
 const CERTIFICATIONS = [
   { name: 'L', Icon: LAIcon }, { name: '10', Icon: DezAIcon },
@@ -25,7 +32,7 @@ const GenreMoviesScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -63,7 +70,14 @@ const GenreMoviesScreen = () => {
     try {
       const genreId = Array.isArray(id) ? id[0] : id;
       const data = await getMoviesByGenre(parseInt(genreId, 10), currentPage, certifications);
-      setMovies(prev => currentPage === 1 ? data.results : [...prev, ...data.results]);
+      
+      setMovies(prev => {
+        const newMovies = (data.results as Movie[]) || [];
+        const allMovies = currentPage === 1 ? newMovies : [...prev, ...newMovies];
+        const uniqueMovies = Array.from(new Map(allMovies.map(movie => [movie.id, movie])).values());
+        return uniqueMovies;
+      });
+
       setHasNextPage(data.page < data.total_pages);
     } catch (error) {
       console.error("Erro ao buscar filmes por gênero:", error);
@@ -143,12 +157,12 @@ const GenreMoviesScreen = () => {
         renderItem={({ item }) => (
           <MovieListItem movie={item} activeCertifications={activeCertifications} />
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         contentContainerStyle={styles.listContent}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={loadingMore ? <ActivityIndicator style={{ marginVertical: 20 }} color="#FFBB38" /> : null}
-        ListEmptyComponent={() => <View style={styles.emptyContainer}><Text style={styles.emptyText}>Nenhum filme encontrado.</Text></View>}
+        ListEmptyComponent={() => !loading && <View style={styles.emptyContainer}><Text style={styles.emptyText}>Nenhum filme encontrado.</Text></View>}
       />
 
       <Modal animationType="fade" transparent={true} visible={isFilterModalVisible} onRequestClose={() => setFilterModalVisible(false)}>
@@ -177,6 +191,7 @@ const GenreMoviesScreen = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#453a29' },

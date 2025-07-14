@@ -203,7 +203,7 @@ export default function CineIAScreen() {
         <LinearGradient colors={['#453a29', '#2C2C2C']} style={StyleSheet.absoluteFill} />
         
         <KeyboardAvoidingView 
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
           style={{ flex: 1 }}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 116 : 0}
         >
